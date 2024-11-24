@@ -171,7 +171,29 @@ public class GraphAlgorithms {
      * from the specified vertex v to the vertex in the pair.
      */
     public static <V> Map<V, Integer> dijkstra(Graph<V> graph, V v) {
+        Map<V, Integer> shortest = new HashMap<>();
+        for (V vert : graph.vertices()) {
+            shortest.put(vert, Integer.MAX_VALUE);
+        }
+        shortest.put(v, 0);
+        List<V> visited = new ArrayList<>();
+        Queue<V> queue = new LinkedList<>();
+        queue.add(v);
 
-        return null;
+        while(!queue.isEmpty()) {
+            V current = queue.poll();
+            for (V neighbor : graph.neighbors(current)) {
+                if (!visited.contains(neighbor)) {
+                    queue.add(neighbor);
+                    for (Edge<V> e : graph.incidentEdges(current)) {
+                        if (e.getU().equals(current) || e.getU().equals(neighbor) && e.getV().equals(current) || e.getV().equals(neighbor)) {
+                            if (e.getWeight() < shortest.get(neighbor))  shortest.put(neighbor, shortest.get(current) + e.getWeight());
+                        }
+                    }
+                }
+            }
+            visited.add(current);
+        }
+        return shortest;
     }
 }
