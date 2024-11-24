@@ -177,7 +177,7 @@ public class GraphAlgorithms {
         }
         shortest.put(v, 0);
         List<V> visited = new ArrayList<>();
-        Queue<V> queue = new LinkedList<>();
+        Queue<V> queue = new PriorityQueue<>();
         queue.add(v);
 
         while(!queue.isEmpty()) {
@@ -186,7 +186,7 @@ public class GraphAlgorithms {
                 if (!visited.contains(neighbor)) {
                     queue.add(neighbor);
                     for (Edge<V> e : graph.incidentEdges(current)) {
-                        if (e.getU().equals(current) || e.getU().equals(neighbor) && e.getV().equals(current) || e.getV().equals(neighbor)) {
+                        if ((e.getU().equals(current) || e.getU().equals(neighbor)) && (e.getV().equals(current) || e.getV().equals(neighbor))) {
                             if (e.getWeight() < shortest.get(neighbor))  shortest.put(neighbor, shortest.get(current) + e.getWeight());
                         }
                     }
