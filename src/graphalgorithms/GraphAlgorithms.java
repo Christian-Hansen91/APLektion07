@@ -151,6 +151,7 @@ public class GraphAlgorithms {
         edges.add(current);
         visited.add(current.getU());
         visited.add(current.getV());
+        Set s = new HashSet();
 
         while (edges.size() < graph.vertices().size() - 1) {
             current = allEdges.get(index);
@@ -176,23 +177,26 @@ public class GraphAlgorithms {
             shortest.put(vert, Integer.MAX_VALUE);
         }
         shortest.put(v, 0);
-        List<V> visited = new ArrayList<>();
-        Queue<V> queue = new PriorityQueue<>();
-        queue.add(v);
-
-        while(!queue.isEmpty()) {
-            V current = queue.poll();
+        List<V> queue = new ArrayList<>();
+        queue.addAll(graph.vertices());
+        queue.sort((V v1, V v2) -> shortest.get(v1) - shortest.get(v2));
+        System.out.println(queue);
+        while (!queue.isEmpty()) {
+            V current = queue.remove(0);
             for (V neighbor : graph.neighbors(current)) {
-                if (!visited.contains(neighbor)) {
-                    queue.add(neighbor);
-                    for (Edge<V> e : graph.incidentEdges(current)) {
-                        if ((e.getU().equals(current) || e.getU().equals(neighbor)) && (e.getV().equals(current) || e.getV().equals(neighbor))) {
-                            if (e.getWeight() < shortest.get(neighbor))  shortest.put(neighbor, shortest.get(current) + e.getWeight());
-                        }
+                Edge<V> edge = null;
+                for (Edge<V> e : graph.incidentEdges(current)) {
+                    if (e.getV().equals(neighbor) || e.getU().equals(neighbor)) {
+                        edge = e;
                     }
                 }
+                if (edge.getWeight() + shortest.get(current) < shortest.get(neighbor)) {
+                    shortest.put(neighbor, shortest.get(current) + edge.getWeight());
+                }
             }
-            visited.add(current);
+
+            queue.sort((V v1, V v2) -> shortest.get(v1) - shortest.get(v2));
+
         }
         return shortest;
     }

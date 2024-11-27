@@ -43,7 +43,7 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
     public List<Edge<V>> edges() {
         List<Edge<V>> edges = new ArrayList<>();
         for (int i = 0; i < matrixSize; i++) {
-            for (int j = 0; j < matrixSize; j++) {
+            for (int j = i; j < matrixSize; j++) {
                 if (matrix[i][j] != null) {
                     edges.add(matrix[i][j]);
                 }
@@ -180,6 +180,8 @@ public class AdjacencyMatrixGraph<V> implements Graph<V> {
     public void removeVertex(V v) {
         assert incidentEdges(v).isEmpty();
         vertices.remove(v);
+        matrixSize--;
+        //TODO fix matrix
     }
 
     /**
