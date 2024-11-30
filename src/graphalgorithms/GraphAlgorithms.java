@@ -142,6 +142,11 @@ public class GraphAlgorithms {
      * Return a minimum spanning tree (MST).
      */
     public static <V> List<Edge<V>> mst(Graph<V> graph) {
+        Set<V> verts = new HashSet<>();
+        for (V vertex : graph.vertices()) {
+            verts.add(vertex);
+        }
+
         List<Edge<V>> edges = new ArrayList<>();
         List<Edge<V>> allEdges = graph.edges();
         List<V> visited = new ArrayList<>();
