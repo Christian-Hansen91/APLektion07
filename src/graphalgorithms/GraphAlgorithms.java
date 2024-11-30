@@ -21,6 +21,7 @@ public class GraphAlgorithms {
         g.addEdge(6, 123, 7);
         g.addEdge(6, 66, 8);
         g.addEdge(123, 66, 76);
+        //g.addEdge(38, 6, 9);
 
         g.printGraph();
         System.out.println();
@@ -61,7 +62,6 @@ public class GraphAlgorithms {
      */
     public static <V> List<V> dfs(Graph<V> graph, V v) {
         assert graph.vertices().contains(v);
-
         List<V> visited = new ArrayList<>();
         List<V> dfsVertices = dfs(graph, v, visited);
 
@@ -94,6 +94,7 @@ public class GraphAlgorithms {
                 }
             }
         }
+
         return visited;
     }
 
@@ -142,31 +143,34 @@ public class GraphAlgorithms {
      * Return a minimum spanning tree (MST).
      */
     public static <V> List<Edge<V>> mst(Graph<V> graph) {
-        Set<V> verts = new HashSet<>();
+        List<Set<V>> setList = new ArrayList<>();
         for (V vertex : graph.vertices()) {
-            verts.add(vertex);
+            Set<V> set = new HashSet<>();
+            set.add(vertex);
+            setList.add(set);
         }
-
         List<Edge<V>> edges = new ArrayList<>();
-        List<Edge<V>> allEdges = graph.edges();
+        Queue<Edge<V>> allEdges = new PriorityQueue<>((Edge<V> e1, Edge<V> e2) -> e1.getWeight() - e2.getWeight());
+        allEdges.addAll(graph.edges());
+        Edge<V> current;
         List<V> visited = new ArrayList<>();
-        int index = 0;
-        allEdges.sort((Edge<V> e1, Edge<V> e2) -> e1.getWeight() - e2.getWeight());
-        Edge<V> current = allEdges.remove(0);
-        edges.add(current);
-        visited.add(current.getU());
-        visited.add(current.getV());
-        Set s = new HashSet();
 
         while (edges.size() < graph.vertices().size() - 1) {
-            current = allEdges.get(index);
-            if (visited.contains(current.getU()) ^ visited.contains(current.getV())) {
-                if (visited.contains(current.getU())) visited.add(current.getV());
-                else visited.add(current.getU());
-                allEdges.remove(index);
+            current = allEdges.poll();
+            V v = current.getV();
+            V u = current.getU();
+            int iV = 0, iU = 0, temp = 0;
+            boolean found = false;
+            while (!found && temp < setList.size()) {
+                if (setList.get(temp).contains(v)) iV = temp;
+                if (setList.get(temp).contains(u)) iU = temp;
+                temp++;
+            }
+            if (iV != iU) {
+                setList.get(iV).add(u);
+                setList.remove(iU);
                 edges.add(current);
-                index = 0;
-            } else index++;
+            }
         }
         return edges;
     }
